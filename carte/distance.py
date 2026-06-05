@@ -10,3 +10,11 @@ def distance_km(point_a, point_b):
     a = (point_a[0], point_a[1])
     b = (point_b[0], point_b[1])
     return geodesic(a, b).km
+
+def summary_distance_km(villes):
+    """Distance totale d'un trajet fermé (liste de points)."""
+    total = 0.0
+    n = len(villes)
+    for i in range(n - 1):
+        total += distance_km(villes[i], villes[i + 1])
+    return total

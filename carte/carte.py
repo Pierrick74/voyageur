@@ -1,7 +1,7 @@
 import folium
 
 
-def create_map(location=(46.603354, 1.888334), zoom_start=6):
+def create_map(location=(45.90381762075815, 6.127304232989283), zoom_start=15):
     """Crée une carte folium centrée sur la France par défaut."""
     return folium.Map(location=list(location), zoom_start=zoom_start)
 
@@ -20,3 +20,4 @@ def draw_route(carte, points):
     """Trace une ligne reliant les points (lat, lon, nom)."""
     trace = [(lat, lon) for lat, lon, _ in points]
     folium.PolyLine(locations=trace, color="blue", weight=2.5, opacity=0.8).add_to(carte)
+

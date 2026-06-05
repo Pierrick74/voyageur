@@ -1,8 +1,19 @@
+import csv
+
+
+def lire_villes(chemin="70villes.csv"):
+    """Lit un fichier CSV (latitude, longitude) et renvoie une liste
+    de points au format (latitude, longitude, nom)."""
+    points = []
+    with open(chemin, newline="", encoding="utf-8") as f:
+        lecteur = csv.DictReader(f)
+        for i, ligne in enumerate(lecteur, start=1):
+            lat = float(ligne["latitude"])
+            lon = float(ligne["longitude"])
+            points.append((lat, lon, f"Ville {i}"))
+    return points
+
+
 # Liste des points : (latitude, longitude, nom)
 POINTS = [
-    (45.89925759439477, 6.129232000386595, "Mairie"),
-    (45.90787713169338, 6.102644924842454, "Les papetteries"),
-    (45.903603796612735, 6.1443960454335524, "Le parc"),
-    (45.91671513850967, 6.1176489655207344, "Stade"),
-    (45.90794056719483, 6.122057284821229, "parking")
 ]

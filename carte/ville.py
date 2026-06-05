@@ -44,6 +44,7 @@ class Ville:
                 visites.append(next_ville)
                 actuel = next_ville
 
+        visites.append(depart_index)  # retour au point de départ (boucle fermée)
         points = self.rebuild_points(visites)
 
         return points
@@ -51,7 +52,6 @@ class Ville:
     def rebuild_points(self, visites):
         points = []
         for i in visites:
-            index = visites.index(i)
             points.append((self.destinations[i][0], self.destinations[i][1], self.noms[i]))
         return points
     

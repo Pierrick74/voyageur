@@ -1,8 +1,8 @@
 import folium
 
 
-def create_map(location=(45.90381762075815, 6.127304232989283), zoom_start=15):
-    """Crée une carte folium centrée sur la France par défaut."""
+def create_map(location=(45.49, 5.49), zoom_start=9):
+    """Crée une carte folium centrée par défaut sur la zone couverte par 70villes.csv."""
     return folium.Map(location=list(location), zoom_start=zoom_start)
 
 

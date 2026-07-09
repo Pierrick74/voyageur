@@ -12,8 +12,3 @@ def lire_villes(chemin="70villes.csv"):
             lon = float(ligne["longitude"])
             points.append((lat, lon, f"Ville {i}"))
     return points
-
-
-# Liste des points : (latitude, longitude, nom)
-POINTS = [
-]

@@ -8,35 +8,71 @@ pas euclidiennes.
 
 ## Installation
 
+Le projet tourne sur deux interpréteurs. CPython est la référence ; PyPy exécute le même
+code environ 4 fois plus vite grâce à son JIT.
+
+### CPython
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+python3.14 -m venv .venv-mac
+.venv-mac/bin/pip install -r requirements.txt
 ```
+
+### PyPy
+
+```bash
+uv python install pypy-3.11
+uv venv --python pypy-3.11 .venv-pypy
+uv pip install --python .venv-pypy/bin/python -r requirements.txt
+```
+
+`uv pip install` est nécessaire car `uv venv` n'installe pas de `pip` dans le venv.
+Attention à ne pas appeler `pypy` directement si Homebrew est installé : sa formule
+`pypy` fournit PyPy 2.7, sur lequel ce code ne tourne pas.
 
 ## Utilisation
 
 ```bash
-python main.py
+.venv-mac/bin/python main.py    # CPython 3.14 — ~21 s
+.venv-pypy/bin/python main.py   # PyPy 3.11    — ~5 s
 ```
 
 Le script lit `70villes.csv`, construit un trajet par chacune des quatre méthodes,
 affiche la distance totale et le temps de calcul de chacune, puis exporte le trajet
 de la colonie de fourmis dans `carte.html` (à ouvrir dans un navigateur).
 
-Sortie typique :
+Sortie typique (CPython) :
 
 ```
-Distance totale (voisins) : 730.29 km en 0.15 s
-Distance totale (optimisée) : 629.71 km en 1.20 s
-Distance totale (glouton) : 714.80 km en 0.30 s
-Distance totale (fourmis) : ... km en ... s
+Distance totale (voisins) : 730.29 km en 0.12 s
+Distance totale (optimisée) : 629.71 km en 2.25 s
+Distance totale (glouton) : 714.80 km en 5.72 s
+Distance totale (fourmis) : 2670.00 km en 12.49 s
 Carte générée → carte.html
 ```
 
 Les trois premières distances sont stables (algorithmes déterministes) ; celle de la
 colonie de fourmis varie d'une exécution à l'autre, et son temps de calcul dépend
 directement du nombre d'itérations passé à `colonie.run()`.
+
+### Temps comparés
+
+| Algorithme | CPython 3.14 | PyPy 3.11 | gain |
+| --- | --- | --- | --- |
+| voisins | 0,12 s | 0,27 s | 0,4× |
+| 2-opt | 2,25 s | 0,45 s | 5,0× |
+| glouton | 5,72 s | 1,04 s | 5,5× |
+| fourmis | 12,49 s | 1,28 s | 9,8× |
+| **total** | **20,9 s** | **4,9 s** | **4,3×** |
+
+Le plus proche voisin est le seul à régresser : il est trop court pour amortir le
+démarrage du JIT. À l'inverse la colonie de fourmis, seule boucle vraiment chaude,
+prend presque un facteur 10.
+
+Le JIT expérimental de CPython 3.14 (`PYTHON_JIT=1`) n'est **pas** une alternative ici :
+les binaires Homebrew ne sont pas compilés avec `--enable-experimental-jit`, la variable
+est donc ignorée silencieusement. À vérifier avec `sys._jit.is_available()` avant toute
+mesure.
 
 ## Algorithmes
 

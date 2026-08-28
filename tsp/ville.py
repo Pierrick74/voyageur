@@ -1,6 +1,6 @@
 import numpy as np
 
-from carte.distance import distance_km
+from tsp.distance import distance_km
 
 
 class Ville:
